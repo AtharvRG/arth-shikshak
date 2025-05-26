@@ -28,7 +28,7 @@ export default function SelectChatPage() {
 
         {/* Guiding text */}
         <p className="text-sm md:text-base text-neutral-500 max-w-sm">
-            Choose a previous conversation from the history panel on the left, or click the "New Chat" button to begin planning with Arth Shikshak.
+            Choose a previous conversation from the history panel on the left, or click the &quot;New Chat&quot; button to begin planning with Arth Shikshak.
         </p>
     </motion.div>
   );

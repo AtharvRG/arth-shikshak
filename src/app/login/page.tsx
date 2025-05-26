@@ -88,7 +88,7 @@ export default function LoginPage() {
              </MovingBorderButton>
            </form>
            <p className="text-center text-sm text-neutral-400">
-                 Don't have an account?{" "}
+                 Don&apos;t have an account?{" "}
                  {/* Use CustomLink for Sign Up link */}
                  <CustomLink href="/signup" loadingType="fullPage" className="font-medium text-blue-500 hover:underline">
                    Sign Up

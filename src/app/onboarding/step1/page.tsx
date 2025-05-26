@@ -54,7 +54,7 @@ export default function OnboardingStep1() {
     >
         <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-white">Tell us about yourself</h2>
-            <p className="text-neutral-400 text-sm">Let's start with the basics.</p>
+            <p className="text-neutral-400 text-sm">Let&apos;s start with the basics.</p>
         </div>
 
         <form onSubmit={goToNextStep} className="space-y-5">

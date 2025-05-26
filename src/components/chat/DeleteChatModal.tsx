@@ -54,7 +54,7 @@ export default function DeleteChatModal({
             </DialogPrimitive.Title>
             <DialogPrimitive.Description className="text-sm text-neutral-400 mt-1">
               Are you absolutely sure you want to delete the chat titled: <br />
-              <strong className="text-neutral-200 break-all">"{chatTitle}"</strong>?
+              <strong className="text-neutral-200 break-all">&apos;{chatTitle}&apos;</strong>?
               <br /> This action cannot be undone.
             </DialogPrimitive.Description>
           </div>

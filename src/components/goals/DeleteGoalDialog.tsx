@@ -32,7 +32,7 @@ export default function DeleteGoalDialog({
              <FiAlertTriangle className="w-5 h-5" /> Delete Goal
           </DialogTitle>
           <DialogDescription className="text-left pt-2 text-muted-foreground">
-            Are you absolutely sure you want to delete the goal <strong className="text-foreground">"{goalTitle || 'this goal'}"</strong>?
+            Are you absolutely sure you want to delete the goal <strong className="text-foreground">&apos;{goalTitle || 'this goal'}&apos;</strong>?
             This action cannot be undone and all associated data will be lost.
           </DialogDescription>
         </DialogHeader>
