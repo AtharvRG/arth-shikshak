@@ -33,7 +33,7 @@ export default function EMICalculator() {
     };
   };
 
-  const results = useMemo(() => calculateEMI(), [principal, rate, tenure]);
+  const results = useMemo(calculateEMI, [principal, rate, tenure, calculateEMI]);
 
   const chartData = [
     { name: 'Principal Amount', value: results.principal, color: '#60a5fa' }, // Blue-400

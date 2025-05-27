@@ -150,7 +150,10 @@ const IncomeExpenseBarChart: React.FC<IncomeExpenseChartProps> = ({
                         iconType="square" iconSize={10} // Style legend markers
                         verticalAlign="bottom" // Position legend below chart
                         wrapperStyle={{ fontSize: '11px', color: TEXT_COLOR_LIGHT, paddingTop: '15px' }} // Style legend text and spacing
-                        payload={legendPayload} 
+                        payload={[
+                            { value: 'Income', type: 'square' as const, id: 'id-income', color: INCOME_COLOR },
+                            { value: 'Expenses', type: 'square' as const, id: 'id-expenses', color: EXPENSE_COLOR },
+                        ]}
                     />
                     {/* Income Bar */}
                     <Bar dataKey="Income" radius={[0, 4, 4, 0]} minPointSize={3}>

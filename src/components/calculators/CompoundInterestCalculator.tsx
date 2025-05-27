@@ -37,7 +37,7 @@ export default function CompoundInterestCalculator() {
     };
   };
 
-  const results = useMemo(() => calculateCompoundInterest(), [principal, rate, timePeriod, compoundingFrequency]);
+  const results = useMemo(calculateCompoundInterest, [principal, rate, timePeriod, compoundingFrequency, calculateCompoundInterest]);
 
   const chartData = [
     { name: 'Principal Amount', value: results.investedAmount, color: '#60a5fa' }, // Blue-400

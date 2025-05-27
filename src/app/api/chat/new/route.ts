@@ -11,10 +11,14 @@ export async function POST(req: NextRequest) {
   try {
     // 1. Authenticate the user
     const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    if (!session?.user?.email) {
       return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
     }
-    const userId = new ObjectId(session.user.id); // Convert user ID to ObjectId
+    // Ensure user has an ID before proceeding
+    if (!session.user || !('id' in session.user)) {
+      throw new Error('User ID not found in session');
+    }
+    const userId = new ObjectId((session.user as any).id); // Convert user ID to ObjectId with type assertion
 
     // 2. Connect to the database
     const client: MongoClient = await clientPromise;

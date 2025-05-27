@@ -66,13 +66,13 @@ export default async function ChatPage({ params }: ChatPageProps) {
     const session = await getServerSession(authOptions);
 
     // 2. Handle Unauthenticated User - Redirect to Login
-    if (!session?.user?.id) {
+    if (!session?.user || !session.user.email) {
         const callbackUrl = encodeURIComponent(`/chat/${chatId}`);
         redirect(`/login?callbackUrl=${callbackUrl}`); // Use Next.js redirect function
     }
 
     // 3. Fetch Chat Data for Authenticated User
-    const { messages: initialMessages, error: fetchError, status: errorStatus } = await getChatData(chatId, session.user.id);
+    const { messages: initialMessages, error: fetchError, status: errorStatus } = await getChatData(chatId, session.user.email!);
 
     // 4. Handle Fetch Errors by rendering ChatInterface with an error message
     if (fetchError) {

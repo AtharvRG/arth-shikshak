@@ -48,9 +48,9 @@ async function getUserProfileData(userId: string): Promise<ProfilePageData | nul
 // --- Main Profile Page Component (Server Component) ---
 export default async function ProfilePage() {
     const session = await getServerSession(authOptions);
-    if (!session?.user?.id) { redirect(`/login?callbackUrl=/profile`); }
+    if (!session?.user || !('id' in session.user)) { redirect(`/login?callbackUrl=/profile`); }
 
-    const userData = await getUserProfileData(session.user.id);
+    const userData = await getUserProfileData(session.user.id as string);
 
     // 4. Handle Data Fetching Error: Render an error message within the layout
     if (!userData) {
@@ -74,7 +74,15 @@ export default async function ProfilePage() {
             <Navbar />
             <main className="flex-1 p-4 md:p-6 lg:p-10">
                 {/* Pass the correctly typed and serialized data */}
-                <ProfileClientPageWrapper initialData={userData as ProfilePageData} />
+                <ProfileClientPageWrapper initialData={{
+                    ...userData,
+                    goals: userData.goals.map(goal => ({
+                        ...goal,
+                        targetDate: goal.targetDate?.toString(),
+                        createdAt: goal.createdAt.toString(),
+                        updatedAt: goal.updatedAt.toString()
+                    }))
+                }} />
             </main>
         </div>
     );

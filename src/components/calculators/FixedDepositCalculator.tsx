@@ -38,7 +38,7 @@ export default function FixedDepositCalculator() {
     };
   };
 
-  const results = useMemo(() => calculateFD(), [principal, rate, timePeriod, compoundingFrequency]);
+  const results = useMemo(calculateFD, [principal, rate, timePeriod, compoundingFrequency, calculateFD]);
 
   const chartData = [
     { name: 'Principal Amount', value: results.principalAmount, color: '#60a5fa' }, // Blue-400

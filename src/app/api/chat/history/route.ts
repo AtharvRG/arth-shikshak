@@ -9,10 +9,10 @@ import { Chat } from '@/models/Chat';
 export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    if (!session?.user?.email) {
       return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
     }
-    const userId = new ObjectId(session.user.id);
+    const userId = new ObjectId((session.user as any).id);
 
     const client: MongoClient = await clientPromise;
     const db: Db = client.db();

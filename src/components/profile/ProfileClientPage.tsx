@@ -121,7 +121,8 @@ function ProfileFormContent({ initialData }: ProfileClientPageProps) {
          setIsSavingGoal(true); setAddGoalError(null); startLoading('popup', ['Adding goal...']);
          try {
              const response = await fetch('/api/goals', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(goalData), });
-             const newGoal: LocalGoal = await response.json(); if (!response.ok) throw new Error(newGoal.message || 'Failed');
+             const newGoal: LocalGoal = await response.json();
+if (!response.ok) throw new Error('Failed');
              setLocalGoals(prev => [newGoal, ...prev]); setShowAddGoalForm(false);
              const form = document.getElementById('inline-add-goal-form') as HTMLFormElement; form?.reset();
          } catch (err) { setAddGoalError(err instanceof Error ? err.message : "Error."); }

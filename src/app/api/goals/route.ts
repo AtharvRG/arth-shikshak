@@ -12,10 +12,11 @@ export async function GET(req: NextRequest) {
   try {
     // 1. Authentication
     const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    if (!session?.user?.email) {
       return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
     }
-    const userId = new ObjectId(session.user.id);
+    // Cast session.user to include id property
+    const userId = new ObjectId((session.user as any).id);
 
     // 2. Database Fetch
     const client: MongoClient = await clientPromise;
@@ -43,10 +44,10 @@ export async function POST(req: NextRequest) {
     try {
         // 1. Authentication
         const session = await getServerSession(authOptions);
-        if (!session?.user?.id) {
+        if (!session?.user?.email || !(session.user as any).id) {
             return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
         }
-        const userId = new ObjectId(session.user.id);
+        const userId = new ObjectId((session.user as any).id);
 
         // 2. Parse Request Body
         const body = await req.json();

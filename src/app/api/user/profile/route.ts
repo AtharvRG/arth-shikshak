@@ -28,10 +28,10 @@ export async function PUT(req: NextRequest) {
   try {
     // 1. Authentication
     const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    if (!session?.user?.email) {
       return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
     }
-    const userId = new ObjectId(session.user.id);
+    const userId = new ObjectId((session.user as any).id);
 
     // 2. Parse Request Body
     const body = await req.json() as UpdateProfileRequestBody;

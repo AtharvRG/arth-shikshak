@@ -43,13 +43,13 @@ export default async function SnapshotPage() {
     const session = await getServerSession(authOptions);
 
     // 2. Authentication Check: Redirect if not logged in
-    if (!session?.user?.id) {
+    if (!session?.user?.email) {
         const callbackUrl = encodeURIComponent('/snapshot');
         redirect(`/login?callbackUrl=${callbackUrl}`);
     }
 
     // 3. Fetch User Financial Data
-    const userData = await getUserFinancialData(session.user.id);
+    const userData = await getUserFinancialData(session.user?.email as string);
 
     // 4. Handle Data Fetching Error: Render error message within layout
     if (!userData) {

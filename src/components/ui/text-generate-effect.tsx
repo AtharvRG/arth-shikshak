@@ -23,7 +23,7 @@ export const TextGenerateEffect = ({
         delay: stagger(0.05), // Slightly faster stagger
       }
     );
-  }, [scope.current]); // Re-run animation when scope changes (usually on mount)
+  }, [animate]); // Re-run animation when scope changes (usually on mount)
 
   const renderWords = () => {
     return (

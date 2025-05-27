@@ -13,10 +13,10 @@ export async function GET(
 ) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    if (!session?.user || !('id' in session.user)) {
       return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
     }
-    const userId = new ObjectId(session.user.id);
+    const userId = new ObjectId(session.user.id as string);
     const chatId = params.chatId;
 
     if (!chatId || typeof chatId !== 'string') {
@@ -61,10 +61,10 @@ export async function DELETE(
     try {
         // 1. Authentication & Authorization
         const session = await getServerSession(authOptions);
-        if (!session?.user?.id) {
+        if (!session?.user || !('id' in session.user)) {
             return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
         }
-        const userId = new ObjectId(session.user.id);
+        const userId = new ObjectId(session.user.id as string);
         const chatId = params.chatId;
 
         // Validate Chat ID

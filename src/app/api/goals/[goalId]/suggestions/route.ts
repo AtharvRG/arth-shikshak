@@ -20,8 +20,8 @@ export async function POST(
     try {
         // 1. Auth & Goal Fetch (Verify Ownership)
         const session = await getServerSession(authOptions);
-        if (!session?.user?.id) return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
-        const userId = new ObjectId(session.user.id);
+        if (!session?.user || !('id' in session.user)) return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
+        const userId = new ObjectId(session.user.id as string);
         let goalObjectId: ObjectId;
         try { goalObjectId = new ObjectId(params.goalId); }
         catch (e) { return NextResponse.json({ message: "Invalid Goal ID format." }, { status: 400 }); }
@@ -73,8 +73,8 @@ export async function PUT(
      try {
         // 1. Auth & Goal Fetch (Verify Ownership)
         const session = await getServerSession(authOptions);
-        if (!session?.user?.id) return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
-        const userId = new ObjectId(session.user.id);
+        if (!session?.user || !('id' in session.user)) return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
+        const userId = new ObjectId(session.user.id as string);
         let goalObjectId: ObjectId;
         try { goalObjectId = new ObjectId(params.goalId); }
         catch (e) { return NextResponse.json({ message: "Invalid Goal ID format." }, { status: 400 }); }

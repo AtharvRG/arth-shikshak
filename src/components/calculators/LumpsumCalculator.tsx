@@ -36,7 +36,7 @@ export default function LumpsumCalculator() {
     };
   };
 
-  const results = useMemo(() => calculateLumpsum(), [totalInvestment, expectedReturnRate, timePeriod]);
+  const results = calculateLumpsum();
 
   const chartData = [
     { name: 'Invested Amount', value: results.investedAmount, color: '#60a5fa' }, // Blue-400

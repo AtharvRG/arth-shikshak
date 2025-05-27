@@ -38,7 +38,7 @@ export default function SIPCalculator() {
     };
   };
 
-  const results = useMemo(() => calculateSIP(), [monthlyInvestment, expectedReturnRate, timePeriod]);
+  const results = useMemo(calculateSIP, [monthlyInvestment, expectedReturnRate, timePeriod]);
 
   const chartData = [
     { name: 'Invested Amount', value: results.investedAmount, color: '#60a5fa' }, // Blue-400

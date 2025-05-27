@@ -14,8 +14,8 @@ export async function DELETE(req: NextRequest, { params }: { params: { goalId: s
     try {
         // ... (Auth, Validation, DB Deletion logic) ...
         const session = await getServerSession(authOptions);
-        if (!session?.user?.id) return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
-        const userId = new ObjectId(session.user.id);
+        if (!session?.user?.email) return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
+        const userId = new ObjectId((session.user as any).id);
         let goalObjectId: ObjectId;
         try { goalObjectId = new ObjectId(params.goalId); }
         catch (e) { return NextResponse.json({ message: "Invalid Goal ID format." }, { status: 400 }); }
@@ -43,8 +43,8 @@ export async function PUT(
      try {
         // 1. Authentication & Authorization
         const session = await getServerSession(authOptions);
-        if (!session?.user?.id) return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
-        const userId = new ObjectId(session.user.id);
+        if (!session?.user?.email) return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
+        const userId = new ObjectId((session.user as any).id);
         let goalObjectId: ObjectId;
         try { goalObjectId = new ObjectId(params.goalId); }
         catch (e) { return NextResponse.json({ message: "Invalid Goal ID format." }, { status: 400 }); }

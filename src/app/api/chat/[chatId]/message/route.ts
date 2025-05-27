@@ -20,10 +20,10 @@ export async function POST(
   try {
     // 1. Authentication & Authorization
     const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    if (!session?.user || !session.user.email) {
       return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
     }
-    const userId = new ObjectId(session.user.id); // User's ObjectId
+    const userId = new ObjectId((session.user as any).id); // User's ObjectId
     const chatId = params.chatId; // Chat ID from URL path
 
     // Validate Chat ID format

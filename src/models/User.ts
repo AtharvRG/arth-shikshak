@@ -16,11 +16,17 @@ export interface User {
   occupation?: string | null;
   annualSalary?: number | null;
   // Expenses: Store as an array of objects or reference a separate collection
-  expenses?: { category: string; amount: number }[] | null;
+  expenses?: {
+      _id: any; category: string; amount: number 
+}[] | null;
   // Debts: Store as an array of objects or reference a separate collection
-  debts?: { type: string; amount: number; emi?: number }[] | null;
+  debts?: {
+      _id: any; type: string; amount: number; emi?: number 
+}[] | null;
   // Investments: Store as an array of objects or reference a separate collection
-  investments?: { type: string; amount: number }[] | null;
+  investments?: {
+      _id: any; type: string; amount: number 
+}[] | null;
   // Goals: Reference a separate collection
   // goals?: ObjectId[] | null;
 

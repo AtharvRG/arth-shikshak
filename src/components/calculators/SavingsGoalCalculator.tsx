@@ -68,7 +68,7 @@ export default function SavingsGoalCalculator() {
     };
   };
 
-  const results = useMemo(() => calculateSavingsGoal(), [targetAmount, initialSavings, timePeriod, expectedReturnRate]);
+  const results = useMemo(calculateSavingsGoal, [targetAmount, initialSavings, timePeriod, expectedReturnRate, calculateSavingsGoal]);
 
   const chartData = [
     { name: 'Initial Savings', value: results.initialSavings, color: '#3b82f6' }, // Blue-500

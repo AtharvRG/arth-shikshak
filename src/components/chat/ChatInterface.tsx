@@ -133,7 +133,7 @@ export default function ChatInterface({ chatId, initialMessages = [] }: ChatInte
             }
         }
     // Add all relevant dependencies to ensure effect runs when needed but not excessively
-    }, [searchParams, chatId, initialMessages, messages.length, isLoading, handleSendMessage]);
+    }, [searchParams, chatId, initialMessages, messages, isLoading, handleSendMessage]);
 
     return (
         // Main container for the chat interface area

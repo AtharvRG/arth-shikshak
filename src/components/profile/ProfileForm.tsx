@@ -29,6 +29,20 @@ type ProfileFormData = {
   investments: { id?: string; type: string; amount: string }[]; // Use string for amount
 };
 
+// Define the shape of the data sent to the update profile API
+interface UpdateProfileRequestBody {
+    name: string;
+    dob?: string; // Optional
+    occupation?: string; // Optional
+    annualSalary?: number | null; // Can be number or null
+    foodExpense?: number | null; // Can be number or null
+    transportExpense?: number | null; // Can be number or null
+    utilitiesExpense?: number | null; // Can be number or null
+    customExpenses: { category: string; amount: number }[];
+    debts: { type: string; amount: number; emi?: number | null }[]; // EMI can be number, null, or undefined
+    investments: { type: string; amount: number }[];
+}
+
 // Define props for the component
 interface ProfileFormProps {
   initialData: CustomUserType; // Receive fetched user data
@@ -46,9 +60,10 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
 
     // Extract fixed expenses from the full expenses array for form mapping
     const initialFixedExpenses = {
-        foodExpense: initialData.expenses?.find(e => e.category === 'Food')?.amount ?? '',
-        transportExpense: initialData.expenses?.find(e => e.category === 'Transport')?.amount ?? '',
-        utilitiesExpense: initialData.expenses?.find(e => e.category === 'Utilities')?.amount ?? '',
+        // Removed ?? '' to ensure type is number | null | undefined
+        foodExpense: initialData.expenses?.find(e => e.category === 'Food')?.amount,
+        transportExpense: initialData.expenses?.find(e => e.category === 'Transport')?.amount,
+        utilitiesExpense: initialData.expenses?.find(e => e.category === 'Utilities')?.amount,
     };
 
     // Prepare default values for react-hook-form based on initialData prop
@@ -82,9 +97,10 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
      useEffect(() => {
          // Recalculate defaults based on potentially updated initialData
           const fixedExp = {
-             foodExpense: initialData.expenses?.find(e => e.category === 'Food')?.amount ?? '',
-             transportExpense: initialData.expenses?.find(e => e.category === 'Transport')?.amount ?? '',
-             utilitiesExpense: initialData.expenses?.find(e => e.category === 'Utilities')?.amount ?? '',
+             // Removed ?? ''
+             foodExpense: initialData.expenses?.find(e => e.category === 'Food')?.amount,
+             transportExpense: initialData.expenses?.find(e => e.category === 'Transport')?.amount,
+             utilitiesExpense: initialData.expenses?.find(e => e.category === 'Utilities')?.amount,
          };
          reset({ // Reset form state with new defaults
             name: initialData.name || '',
@@ -125,9 +141,9 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
             foodExpense: data.foodExpense === '' ? undefined : Number(data.foodExpense),
             transportExpense: data.transportExpense === '' ? undefined : Number(data.transportExpense),
             utilitiesExpense: data.utilitiesExpense === '' ? undefined : Number(data.utilitiesExpense),
-            customExpenses: data.customExpenses.map(e => ({...e, amount: Number(e.amount)})),
-            debts: data.debts.map(d => ({...d, amount: Number(d.amount), emi: d.emi === '' ? undefined : Number(d.emi)})),
-            investments: data.investments.map(i => ({...i, amount: Number(i.amount)})),
+            customExpenses: data.customExpenses.map(e => ({category: e.category, amount: Number(e.amount)})).filter(e => e.category?.trim() && !isNaN(e.amount) && e.amount >= 0), // Filter invalid entries
+            debts: data.debts.map(d => ({type: d.type, amount: Number(d.amount), emi: d.emi === '' ? undefined : Number(d.emi)})).filter(d => d.type?.trim() && !isNaN(d.amount) && d.amount >= 0), // Filter invalid entries
+            investments: data.investments.map(i => ({type: i.type, amount: Number(i.amount)})).filter(i => i.type?.trim() && !isNaN(i.amount) && i.amount >= 0), // Filter invalid entries
         };
 
 
@@ -325,15 +341,15 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
                       <h2 className="text-xl font-semibold text-white mb-5">Debts / EMIs</h2>
                       <div className="space-y-2 max-h-60 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-neutral-700 scrollbar-track-neutral-850">
                           {debtFields.map((field, index) => (
-                              <div key={field.id} className="grid grid-cols-6 gap-2 items-center">
-                                  <Input placeholder="Debt Type" {...register(`debts.${index}.type`)} disabled={!isEditing || isSaving} className="text-sm h-9 bg-neutral-950 border-neutral-700 col-span-2 disabled:opacity-70"/>
-                                  <Input type="number" placeholder="Total Amt (INR)" {...register(`debts.${index}.amount`, {valueAsNumber: true})} disabled={!isEditing || isSaving} className="text-sm h-9 bg-neutral-950 border-neutral-700 col-span-2 disabled:opacity-70"/>
-                                  <Input type="number" placeholder="EMI (INR)" {...register(`debts.${index}.emi`, {valueAsNumber: true})} disabled={!isEditing || isSaving} className="text-sm h-9 bg-neutral-950 border-neutral-700 col-span-1 disabled:opacity-70"/>
-                                  {isEditing && <button type="button" onClick={() => removeDebt(index)} disabled={isSaving} className="p-1 text-neutral-500 hover:text-red-400 justify-self-end disabled:opacity-50"><FiTrash2 className="w-4 h-4"/></button>}
+                              <div key={field.id} className="grid grid-cols-1 sm:grid-cols-7 gap-2 items-center p-2 rounded-md bg-neutral-800/30">
+                                  <Input placeholder="Type (Loan, CC)" {...register(`debts.${index}.type`)} disabled={!isEditing || isSaving} className="text-sm h-9 bg-neutral-950 border-neutral-700 col-span-7 sm:col-span-3 disabled:opacity-70"/>
+                                  <Input type="number" placeholder="Total Amt" {...register(`debts.${index}.amount`, {valueAsNumber: true})} disabled={!isEditing || isSaving} className="text-sm h-9 bg-neutral-950 border-neutral-700 col-span-3 sm:col-span-2 disabled:opacity-70"/>
+                                  <Input type="number" placeholder="EMI" {...register(`debts.${index}.emi`, {valueAsNumber: true})} disabled={!isEditing || isSaving} className="text-sm h-9 bg-neutral-950 border-neutral-700 col-span-3 sm:col-span-1 disabled:opacity-70"/>
+                                  {isEditing && <button type="button" onClick={() => removeDebt(index)} disabled={isSaving} className="p-1 text-neutral-500 hover:text-red-400 justify-self-end col-span-1 disabled:opacity-50"><FiTrash2 className="w-4 h-4"/></button>}
                               </div>
                           ))}
                       </div>
-                      {isEditing && <button type="button" onClick={() => appendDebt({ type: '', amount: '', emi: '' })} disabled={isSaving} className="mt-2 text-blue-400 text-xs hover:underline disabled:opacity-50">+ Add Debt</button>}
+                      {isEditing && <button type="button" onClick={() => appendDebt({ type: '', amount: '', emi: '' })} disabled={isSaving} className="mt-2 text-blue-400 text-xs hover:underline disabled:opacity-50">+ Add Debt/Loan</button>}
                  </WobbleCard>
 
                  {/* Card 4: Investments */}
@@ -341,10 +357,10 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
                       <h2 className="text-xl font-semibold text-white mb-5">Investments</h2>
                        <div className="space-y-2 max-h-60 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-neutral-700 scrollbar-track-neutral-850">
                           {investmentFields.map((field, index) => (
-                              <div key={field.id} className="flex items-center gap-2">
-                                  <Input placeholder="Investment Type" {...register(`investments.${index}.type`)} disabled={!isEditing || isSaving} className="text-sm h-9 bg-neutral-950 border-neutral-700 flex-1 disabled:opacity-70"/>
-                                  <Input type="number" placeholder="Current Value (INR)" {...register(`investments.${index}.amount`, {valueAsNumber: true})} disabled={!isEditing || isSaving} className="text-sm h-9 bg-neutral-950 border-neutral-700 w-32 disabled:opacity-70"/>
-                                  {isEditing && <button type="button" onClick={() => removeInvestment(index)} disabled={isSaving} className="p-1 text-neutral-500 hover:text-red-400 disabled:opacity-50"><FiTrash2 className="w-4 h-4"/></button>}
+                              <div key={field.id} className="grid grid-cols-1 sm:grid-cols-7 gap-2 items-center p-2 rounded-md bg-neutral-800/30">
+                                  <Input placeholder="Type (Stocks, MF)" {...register(`investments.${index}.type`)} disabled={!isEditing || isSaving} className="text-sm h-9 bg-neutral-950 border-neutral-700 col-span-7 sm:col-span-4 disabled:opacity-70"/>
+                                  <Input type="number" placeholder="Amount" {...register(`investments.${index}.amount`, {valueAsNumber: true})} disabled={!isEditing || isSaving} className="text-sm h-9 bg-neutral-950 border-neutral-700 col-span-3 sm:col-span-2 disabled:opacity-70"/>
+                                  {isEditing && <button type="button" onClick={() => removeInvestment(index)} disabled={isSaving} className="p-1 text-neutral-500 hover:text-red-400 justify-self-end col-span-1 disabled:opacity-50"><FiTrash2 className="w-4 h-4"/></button>}
                               </div>
                           ))}
                       </div>
