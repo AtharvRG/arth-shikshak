@@ -33,10 +33,10 @@ export async function POST(req: NextRequest) {
     // 1. Get Authenticated User Session
     const session = await getServerSession(authOptions);
 
-    if (!session?.user?.id) {
+    if (!session?.user?.email) {
       return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
     }
-    const userId = session.user.id;
+    const userId = session.user.email as string;
 
     // 2. Parse Request Body
     const body = await req.json() as OnboardingRequestBody;
@@ -68,6 +68,7 @@ export async function POST(req: NextRequest) {
         };
     };
      const cleanInvestment = (item: any) => ({
+        _id: new ObjectId(),
         type: item.type || 'Unknown',
         amount: cleanExpense(item.amount),
     });
@@ -78,16 +79,16 @@ export async function POST(req: NextRequest) {
         occupation: body.occupation?.trim() || null,
         annualSalary: salary,
         expenses: [ // Combine fixed and custom expenses
-            { category: 'Food', amount: cleanExpense(body.foodExpense) },
-            { category: 'Transport', amount: cleanExpense(body.transportExpense) },
-            { category: 'Utilities', amount: cleanExpense(body.utilitiesExpense) },
+            { _id: new ObjectId(), category: 'Food', amount: cleanExpense(body.foodExpense) },
+            { _id: new ObjectId(), category: 'Transport', amount: cleanExpense(body.transportExpense) },
+            { _id: new ObjectId(), category: 'Utilities', amount: cleanExpense(body.utilitiesExpense) },
             ...body.customExpenses
                 .filter(exp => exp.category?.trim() && exp.amount !== '') // Filter out incomplete custom entries
-                .map(exp => ({ category: exp.category!.trim(), amount: cleanExpense(exp.amount) }))
+                .map(exp => ({ _id: new ObjectId(), category: exp.category!.trim(), amount: cleanExpense(exp.amount) }))
         ].filter(exp => exp.amount > 0), // Only save expenses with amount > 0
         debts: body.debts
             .filter(d => d.type?.trim() && d.amount !== '')
-            .map(cleanDebt)
+            .map(d => ({ ...cleanDebt(d), _id: new ObjectId() }))
             .filter(d => d.amount > 0),
         investments: body.investments
             .filter(inv => inv.type?.trim() && inv.amount !== '')
