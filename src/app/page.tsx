@@ -74,7 +74,18 @@ export default function LandingPage() {
       { cardTitle: "AI-Powered Insights", intro: "Unlock deeper understanding:", steps: ["Personalized spending analysis.", "Future cash flow projections.", "Investment suggestions.", "Custom saving recommendations."], conclusion: "Let AI guide your decisions.", gridClassName: "md:col-span-2", },
       { cardTitle: "Seamless Tracking", intro: "Monitor your money:", steps: ["Connect accounts securely (Soon).", "Manual entry with smart categories.", "Visualize spending habits.", "Track income sources."], conclusion: "Know where your money goes.", gridClassName: "md:col-span-1", },
       { cardTitle: "Goal Management", intro: "Define & reach targets:", steps: ["Set financial goals easily.", "Track progress visually.", "Get AI-driven advice.", "Adjust plans flexibly."], conclusion: "Achieve your dreams.", gridClassName: "md:col-span-1", },
-      { cardTitle: "Bank-Level Security", intro: "Your data's safety:", steps: ["AES-256 encryption.", "Secure infrastructure.", "Regular security audits.", "Strict privacy controls."], conclusion: "Manage finances confidently.", gridClassName: "md:col-span-2", },
+      {
+        cardTitle: "Robust Security Practices",
+        intro: "Protecting your data:",
+        steps: [
+          "Secure password hashing (bcrypt).",
+          "Session management with NextAuth.js.",
+          "Input validation to prevent common attacks.",
+          "Regular dependency updates.",
+        ],
+        conclusion: "Your financial data is handled with care.",
+        gridClassName: "md:col-span-2",
+      },
     ];
 
     // JSX structure for the landing page
