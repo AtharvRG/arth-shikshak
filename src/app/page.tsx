@@ -237,21 +237,19 @@ export default function LandingPage() {
             {/* === End Final Call to Action Section === */}
 
 
-            {/* === Footer Section === */}
-            <footer className="py-8 bg-neutral-950 text-neutral-500 text-center text-sm relative z-10">
-                <div className="container mx-auto px-4">
-                    © {new Date().getFullYear()} Arth Shikshak. All Rights Reserved. |
-                    {/* Footer Links */}
-                    <CustomLink href="/privacy" className="link link-hover mx-2 hover:text-neutral-300 transition-colors" loadingType="fullPage">
-                        Privacy Policy
-                    </CustomLink> |
-                    <CustomLink href="/terms" className="link link-hover mx-2 hover:text-neutral-300 transition-colors" loadingType="fullPage">
-                        Terms of Service
-                    </CustomLink>
-                </div>
-            </footer>
-            {/* === End Footer Section === */}
-
-        </div> // End Main Wrapper div
-    );
+            {/* Simple Footer */}
+      <footer className="py-8 bg-neutral-950 text-neutral-500 text-center text-sm relative z-10 border-t border-neutral-800">
+          <div className="container mx-auto px-4">
+              © {new Date().getFullYear()} Arth Shikshak. All Rights Reserved. |
+              {/* Use CustomLink for Footer Links */}
+              <CustomLink href="/privacy" className="link link-hover mx-2 hover:text-neutral-300 transition-colors" loadingType="fullPage">
+                  Privacy Policy
+              </CustomLink> |
+              <CustomLink href="/terms" className="link link-hover mx-2 hover:text-neutral-300 transition-colors" loadingType="fullPage">
+                  Terms of Service
+              </CustomLink>
+          </div>
+      </footer>
+    </div>
+  );
 }
