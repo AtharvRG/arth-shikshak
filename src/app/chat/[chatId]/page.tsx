@@ -3,23 +3,22 @@ import React from 'react';
 import { getServerSession } from "next-auth/next"; // Import for server-side session fetching
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"; // Your NextAuth configuration
 import clientPromise from '@/lib/mongodb'; // Your MongoDB connection utility
-import { Db, MongoClient, ObjectId } from 'mongodb'; // MongoDB types
+import { ObjectId, Db, MongoClient } from 'mongodb'; // MongoDB types
 import { Chat, ChatMessage } from '@/models/Chat'; // Your Chat/Message types
+import { User as CustomUserType } from '@/models/User'; // Import CustomUserType
 import ChatInterface from '@/components/chat/ChatInterface'; // The client component for interaction
 import { redirect } from 'next/navigation'; // Import redirect for unauthenticated users
 
 // --- Server-Side Data Fetching Helper ---
 // Fetches messages directly from DB, ensuring user ownership.
-async function getChatData(chatId: string, userId: string): Promise<{ messages: ChatMessage[], error?: string, status?: number }> {
+async function getChatData(chatId: string, userEmail: string): Promise<{ messages: ChatMessage[], error?: string, status?: number }> {
     let chatObjectId: ObjectId;
-    let userObjectId: ObjectId;
 
-    // Validate IDs before querying
+    // Validate chatId before querying
     try {
         chatObjectId = new ObjectId(chatId);
-        userObjectId = new ObjectId(userId);
     } catch (e) {
-        console.error("Invalid ObjectId format passed to getChatData:", e);
+        console.error("Invalid ObjectId format for chatId in getChatData:", e);
         return { messages: [], error: 'Invalid chat identifier format. Cannot load chat.', status: 400 };
     }
 
@@ -27,16 +26,26 @@ async function getChatData(chatId: string, userId: string): Promise<{ messages: 
     try {
         const client: MongoClient = await clientPromise;
         const db: Db = client.db();
+
+        // First, get the user's ObjectId from their email
+        const usersCollection = db.collection<CustomUserType>('users');
+        const user = await usersCollection.findOne({ email: userEmail });
+
+        if (!user) {
+            console.error(`User not found with email: ${userEmail}`);
+            return { messages: [], error: 'User not found.', status: 404 };
+        }
+
         const chatsCollection = db.collection<Chat>('chats');
 
-        // Find the specific chat document, ensuring it belongs to the logged-in user
+        // Find the specific chat document, ensuring it belongs to the logged-in user's ObjectId
         const chat = await chatsCollection.findOne({
             _id: chatObjectId,
-            userId: userObjectId // Crucial ownership check
+            userId: user._id // Crucial ownership check using the user's ObjectId
         });
 
         if (!chat) {
-            console.log(`Chat not found or access denied for chatId: ${chatId}, userId: ${userId}`);
+            console.log(`Chat not found or access denied for chatId: ${chatId}, userId: ${user._id}`);
             return { messages: [], error: 'Chat not found or access denied.', status: 404 };
         }
 
@@ -72,21 +81,18 @@ export default async function ChatPage({ params }: ChatPageProps) {
     }
 
     // 3. Fetch Chat Data for Authenticated User
-    const { messages: initialMessages, error: fetchError, status: errorStatus } = await getChatData(chatId, session.user.email!);
+    // Pass session.user.email directly as the user identifier
+    const { messages: initialMessages, error: fetchError, status: errorStatus } = await getChatData(chatId, session.user.email!); 
 
-    // 4. Handle Fetch Errors by rendering ChatInterface with an error message
+    // 4. Handle Fetch Errors by rendering ChatInterface with an empty message array
+    // This will suppress the warning message display.
     if (fetchError) {
-        const errorMessage: ChatMessage = {
-            id: crypto.randomUUID(),
-            role: 'system',
-            content: `Error loading chat: ${fetchError} (Status: ${errorStatus || 'Unknown'})`,
-            createdAt: new Date()
-        };
+        console.error(`Displaying empty chat due to fetch error: ${fetchError}`);
         return (
             <ChatInterface
                 key={chatId} // Force re-mount if ID changes unexpectedly
                 chatId={chatId}
-                initialMessages={[errorMessage]}
+                initialMessages={[]} // Pass an empty array to suppress the warning message
             />
         );
     }

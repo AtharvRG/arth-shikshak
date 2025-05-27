@@ -11,15 +11,14 @@ import { FiAlertCircle } from 'react-icons/fi';
 import { redirect } from 'next/navigation';
 
 // --- Server-Side Data Fetching Function ---
-async function getUserFinancialData(userId: string): Promise<Partial<CustomUserType> | null> {
+async function getUserFinancialData(userEmail: string): Promise<Partial<CustomUserType> | null> {
     try {
-        const userObjectId = new ObjectId(userId);
         const client: MongoClient = await clientPromise;
         const db: Db = client.db();
         const usersCollection = db.collection<CustomUserType>('users');
         // Fetch necessary fields for the snapshot
         const user = await usersCollection.findOne(
-            { _id: userObjectId },
+            { email: userEmail }, // Query by email instead of _id
             {
                 projection: { // Specify only the fields needed by the client component
                     _id: 0, name: 1, annualSalary: 1, expenses: 1,

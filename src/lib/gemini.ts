@@ -111,15 +111,8 @@ export async function getGeminiResponse(existingChatHistory: Content[], newMessa
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" }); // Or "gemini-pro" if preferred and working
 
         // Combine system instruction with existing history appropriately
-        let fullHistory: Content[];
-        if (existingChatHistory.length === 0) {
-            // For a brand new chat, start with the system instruction
-            fullHistory = [...SYSTEM_INSTRUCTION_CONTENT];
-        } else {
-            // For existing chats, just use the provided history
-            // The system instruction context is implicitly part of how the model was primed initially
-            fullHistory = [...existingChatHistory];
-        }
+        // Always prepend the system instruction to ensure the model's persona is maintained.
+        const fullHistory: Content[] = [...SYSTEM_INSTRUCTION_CONTENT, ...existingChatHistory];
 
         // Start a chat session with the combined history
         const chat = model.startChat({
