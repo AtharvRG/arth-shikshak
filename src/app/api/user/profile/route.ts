@@ -92,7 +92,7 @@ export async function PUT(req: NextRequest) {
             });
         }
         // Update the expenses field only with valid, non-zero entries
-        updateData.expenses = expensesToSave.filter(exp => exp.amount > 0);
+        updateData.expenses = expensesToSave.filter(exp => exp.amount > 0).map(exp => ({ ...exp, _id: new ObjectId() }));
     }
 
 
@@ -103,6 +103,7 @@ export async function PUT(req: NextRequest) {
             .map(d => {
                 const parsedEmi = safeParseFloat(d.emi);
                 return {
+                    _id: new ObjectId(), // Add a unique _id for each debt
                     type: d.type!.trim(),
                     amount: safeParseFloat(d.amount)!, // We know it's valid from filter
                     // *** FIX: Convert null EMI to undefined to match type ***
@@ -117,6 +118,7 @@ export async function PUT(req: NextRequest) {
         updateData.investments = body.investments
             .filter(inv => inv.type?.trim() && inv.amount !== '' && safeParseFloat(inv.amount) !== null && safeParseFloat(inv.amount)! >= 0)
             .map(inv => ({
+                _id: new ObjectId(),
                 type: inv.type!.trim(),
                 amount: safeParseFloat(inv.amount)!
             }))
