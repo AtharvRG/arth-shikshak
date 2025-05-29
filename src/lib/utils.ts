@@ -12,7 +12,29 @@ export const safeParseFloat = (value: any): number | null => {
   return Number.isFinite(num) ? num : null;
 };
 
-// *** ADD THIS HELPER ***
+// Helper to format numbers in Indian currency format (without symbol)
+export const formatNumberIndian = (value: string | number | null | undefined): string => {
+  if (value === null || value === undefined || value === '') {
+    return '';
+  }
+
+  // Convert to string and remove existing commas for parsing
+  const numStr = String(value).replace(/,/g, '');
+  const num = parseFloat(numStr);
+
+  if (isNaN(num)) {
+    return String(value); // Return original if not a valid number part
+  }
+
+  // Use Intl.NumberFormat for Indian formatting
+  // Specify maximumFractionDigits: 0 to avoid decimals for now
+  return num.toLocaleString('en-IN', {
+    maximumFractionDigits: 0,
+    useGrouping: true,
+  });
+};
+
+
 export const formatCurrencyDisplay = (value: string | number | null | undefined, currency = 'INR'): string => {
     const num = Number(value);
     if (isNaN(num) || value === '' || value === null || value === undefined) return '-'; // Use dash for empty/invalid
@@ -32,4 +54,3 @@ export const formatCurrencyDisplay = (value: string | number | null | undefined,
         return `₹ ${num.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
     }
 };
-// --- End Add ---

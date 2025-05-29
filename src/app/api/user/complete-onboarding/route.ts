@@ -109,15 +109,24 @@ export async function POST(req: NextRequest) {
     const db: Db = client.db();
     const usersCollection = db.collection<CustomUserType>('users');
 
+    // Find the user by email first to get their ObjectId
+    const user = await usersCollection.findOne({ email: userId });
+
+    if (!user) {
+        console.error(`Onboarding Error: User not found with email: ${userId}`);
+        return NextResponse.json({ message: "User not found." }, { status: 404 });
+    }
+
     const result = await usersCollection.updateOne(
-      { _id: new ObjectId(userId) }, // Filter by user's ObjectId
+      { _id: user._id }, // Filter by the user's actual ObjectId
       { $set: updateData }         // Set the new/updated fields
     );
 
     // 6. Check Result & Respond
     if (result.modifiedCount === 0 && result.matchedCount === 0) {
          // This case means the user ID from the session didn't match any user in the DB
-         console.error(`Onboarding Error: User not found with ID: ${userId}`);
+         // (This should ideally not be reached if findOne was successful, but kept for safety)
+         console.error(`Onboarding Error: User not found with ID: ${user._id}`);
          return NextResponse.json({ message: "User not found." }, { status: 404 });
     }
      if (result.modifiedCount === 0 && result.matchedCount === 1) {
