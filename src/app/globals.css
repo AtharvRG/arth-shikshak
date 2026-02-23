@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+@layer base {
+  :root {
+    /* Default Dark Theme Variables (dark-default) */
+    --background: 240 10% 3.9%; /* hsl(240 10% 3.9%) - Black */
+    --foreground: 0 0% 98%; /* hsl(0 0% 98%) - White */
+    --card: 240 10% 6%; /* Darker card */
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 210 40% 98%; /* Light blue/white for primary text */
+    --primary-foreground: 222 47% 11%; /* Dark blue for text on primary bg */
+    --secondary: 240 3.7% 15.9%; /* Grey */
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%; /* Lighter grey text */
+    --accent: 262 84% 59%; /* Purple */
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%; /* Dark Red */
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%; /* Border color */
+    --input: 240 3.7% 15.9%; /* Input background */
+    --ring: 262 84% 59%; /* Focus ring - Purple */
+    --radius: 0.5rem; /* Default border radius */
+  }
+
+
+  
+  body {
+    @apply bg-black; /* Always dark background */
+    @apply text-white; /* Always dark text */
+    @apply min-h-screen;
+    @apply antialiased;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  /* For Firefox */
+  input[type=number] {
+    -moz-appearance: textfield;
+  }
+  
+}
